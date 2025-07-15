@@ -4,7 +4,7 @@ import rclpy
 from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, TurtleBot4Navigator
 
 # ======================
-# ì´ˆê¸° ì„¤ì • (íŒŒì¼ ì•ˆì—ì„œ ì§ì ‘ ì •ì˜)
+# 초기 설정 (파일 안에서 직접 정의)
 # ======================
 INITIAL_POSE_POSITION = [-0.2612, -0.0462]
 INITIAL_POSE_DIRECTION = 0.0
