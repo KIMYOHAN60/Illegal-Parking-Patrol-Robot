@@ -28,12 +28,12 @@ class TurtleBotMarkerFollower(Node):
             10
         )
 
-        # ì´ë¯¸ì§€ ê´€ë ¨ ì´ˆê¸°í™”
+        # 이미지 관련 초기화
         self.bridge = CvBridge()
         self.latest_image = None
         self.image_subscription = self.create_subscription(
             Image,
-            '/camera/color/image_raw',  # ì‹¤ì œ ì¹´ë©”ë¼ í† í”½ì— ë§žê²Œ ìˆ˜ì •í•˜ì„¸ìš”
+            '/camera/color/image_raw',  # 실제 카메라 토픽에 맞게 수정하세요
             self.image_callback,
             10
         )
@@ -41,8 +41,8 @@ class TurtleBotMarkerFollower(Node):
         self.received_marker = False
         self.marker_position = None
 
-        # í˜„ìž¬ ì €ìž¥ ìœ„ì¹˜ ì¶œë ¥
-        self.get_logger().info(f"ðŸ“‚ Current working directory: {os.getcwd()}")
+        # 현재 저장 위치 출력
+        self.get_logger().info(f"📂 Current working directory: {os.getcwd()}")
 
     def marker_callback(self, msg: PointStamped):
         if not self.received_marker:
@@ -70,11 +70,11 @@ class TurtleBotMarkerFollower(Node):
                 cv_image = self.bridge.imgmsg_to_cv2(self.latest_image, desired_encoding='bgr8')
                 cv2.imwrite(filename, cv_image)
 
-                self.get_logger().info(f"âœ… Image saved to {filename}")
+                self.get_logger().info(f"✅ Image saved to {filename}")
             except Exception as e:
-                self.get_logger().error(f"âŒ Failed to save image: {e}")
+                self.get_logger().error(f"❌ Failed to save image: {e}")
         else:
-            self.get_logger().warn("âš  No image received yet.")
+            self.get_logger().warn("⚠ No image received yet.")
 
     def wait_for_marker_and_navigate(self):
         self.get_logger().info("Waiting for Marker message...")
@@ -92,19 +92,19 @@ class TurtleBotMarkerFollower(Node):
         self.navigator.waitUntilNav2Active()
         self.navigator.undock()
 
-        # ì²« ë²ˆì§¸ ëª©ì ì§€: ë§ˆì»¤ ì¢Œí‘œ
+        # 첫 번째 목적지: 마커 좌표
         goal_pose_1 = self.navigator.getPoseStamped(self.marker_position, 0.0)
         self.navigator.startToPose(goal_pose_1)
 
         self.get_logger().info("Reached marker. Taking picture...")
-        time.sleep(1.0)  # ì´ë¯¸ì§€ ì•ˆì •í™” ëŒ€ê¸°
+        time.sleep(1.0)  # 이미지 안정화 대기
         self.take_picture_with_context(self.marker_position)
 
         self.get_logger().info("Proceeding to (-4.7, -3.3).")
 
         time.sleep(5)
 
-        # ë‘ ë²ˆì§¸ ëª©ì ì§€: (-4.7, -3.3)
+        # 두 번째 목적지: (-4.7, -3.3)
         goal_pose_2 = self.navigator.getPoseStamped([-4.7, -3.3], 270.0)
         self.navigator.startToPose(goal_pose_2)
 
